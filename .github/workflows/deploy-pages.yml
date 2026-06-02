@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+# Re-deploys the page whenever index.html or its assets change on main.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "data/logos/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+# Standard Pages-deployment permissions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time; cancel any in-progress to keep things tidy.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Prepare the site directory
+        run: |
+          # Pages will serve files from ./_site.
+          mkdir -p _site
+          # index.html is the entire chart (logos are embedded as base64)
+          cp index.html _site/
+          # Add a tiny landing helper redirect if someone hits /wheel.html etc.
+          cat > _site/404.html <<'EOF'
+          <!DOCTYPE html><html><head>
+          <meta http-equiv="refresh" content="0; url=/">
+          </head><body>Redirecting…</body></html>
+          EOF
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

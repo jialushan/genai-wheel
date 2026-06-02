@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+data/.score_cache.json
+_site/
+.DS_Store

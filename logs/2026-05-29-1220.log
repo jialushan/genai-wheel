@@ -1,0 +1,76 @@
+== v2 update, cap=6, threshold=4.0 ==
+
+[Agentic AI] currently 8
+  - TRIM    Lindy                  (score=6.5, over cap)
+  - TRIM    StackAI                (score=5.5, over cap)
+  → final: 6 tools, avg score 7.50
+
+[Chatbot] currently 8
+  - TRIM    Grok                   (score=7.5, over cap)
+  - TRIM    Qwen Chat              (score=7.0, over cap)
+  → final: 6 tools, avg score 8.97
+
+[Conducting research] currently 8
+  - TRIM    scite                  (score=5.5, over cap)
+  - TRIM    SciSpace               (score=5.0, over cap)
+  → final: 6 tools, avg score 7.58
+
+[Creating and editing images] currently 8
+  - TRIM    Ideogram               (score=7.0, over cap)
+  - TRIM    Nano Banana            (score=5.5, over cap)
+  → final: 6 tools, avg score 8.00
+
+[Creating and editing presentations] currently 8
+  - TRIM    Plus AI                (score=4.5, over cap)
+  - TRIM    Decktopus              (score=4.5, over cap)
+  → final: 6 tools, avg score 6.25
+
+[Creating and editing text] currently 8
+  - TRIM    Writesonic             (score=5.5, over cap)
+  - TRIM    Sudowrite              (score=5.5, over cap)
+  → final: 6 tools, avg score 7.42
+
+[Creating and editing sound] currently 8
+  - TRIM    Krisp                  (score=6.5, over cap)
+  - TRIM    Resemble AI            (score=5.5, over cap)
+  → final: 6 tools, avg score 7.75
+
+[Creating and editing video] currently 8
+  - TRIM    Opus Clip              (score=6.5, over cap)
+  - TRIM    invideo                (score=6.0, over cap)
+  → final: 6 tools, avg score 8.33
+
+[Email management] currently 8
+  - TRIM    Mailbutler             (score=5.0, over cap)
+  - TRIM    Lavender               (score=5.0, over cap)
+  → final: 6 tools, avg score 6.50
+
+[Learning and education] currently 8
+  - TRIM    Coursera Coach         (score=5.5, over cap)
+  - TRIM    NovoEd                 (score=5.0, over cap)
+  → final: 6 tools, avg score 6.50
+
+[Scheduling management] currently 8
+  - TRIM    Kronologic             (score=5.0, over cap)
+  - TRIM    Magical                (score=5.0, over cap)
+  → final: 6 tools, avg score 6.50
+
+[Task automation] currently 8
+  - TRIM    Bardeen                (score=6.0, over cap)
+  - TRIM    Pipedream              (score=5.5, over cap)
+  → final: 6 tools, avg score 7.50
+
+[Transcription] currently 8
+  - TRIM    Krisp                  (score=6.5, over cap)
+  - TRIM    Verbit                 (score=5.5, over cap)
+  → final: 6 tools, avg score 7.50
+
+[Translation and localization] currently 8
+  - TRIM    Lilt                   (score=5.0, over cap)
+  - TRIM    Weglot                 (score=5.0, over cap)
+  → final: 6 tools, avg score 6.42
+
+[Writing and analyzing code] currently 8
+  - TRIM    Sourcegraph            (score=6.5, over cap)
+  - TRIM    Tabnine                (score=6.0, over cap)
+  → final: 6 tools, avg score 8.67

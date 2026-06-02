@@ -1,0 +1,81 @@
+name: Biweekly GenAI wheel update
+
+# Runs every other Monday at 04:00 UTC (≈ 05:00 Geneva winter / 06:00 summer).
+# Cron in GitHub Actions runs in UTC, and there's no "every 2 weeks" syntax
+# natively — so we run weekly and skip odd-numbered weeks at the script level.
+on:
+  schedule:
+    - cron: "0 4 * * 1"   # every Monday 04:00 UTC
+  workflow_dispatch:      # also allow manual triggering from the Actions tab
+
+# Grant the workflow permission to commit files back to the repo.
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          # We need full history so the auto-commit doesn't fight with old refs.
+          fetch-depth: 0
+
+      - name: Skip if not a target ISO week (biweekly cadence)
+        id: cadence
+        run: |
+          # GitHub's cron doesn't support "every 2 weeks". Use ISO week number:
+          # run on EVEN-numbered weeks only. (Adjust to `-eq 1` for odd weeks
+          # if you'd rather start the cadence on the other week.)
+          WEEK=$(date -u +%V)
+          # `10#` forces base-10 in case of leading zero, e.g. "08"
+          if [ $((10#$WEEK % 2)) -ne 0 ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Week $WEEK is odd — skipping this run."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "Week $WEEK is even — proceeding."
+          fi
+        # Manual runs (workflow_dispatch) bypass the cadence check.
+        if: github.event_name == 'schedule'
+
+      - name: Set up Python
+        if: steps.cadence.outputs.skip != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        if: steps.cadence.outputs.skip != 'true'
+        run: pip install -r requirements.txt
+
+      - name: Run the v2 updater
+        if: steps.cadence.outputs.skip != 'true'
+        run: python main.py --quiet
+
+      - name: Show what changed
+        if: steps.cadence.outputs.skip != 'true'
+        run: |
+          echo "=== git diff summary ==="
+          git diff --stat || true
+          echo ""
+          echo "=== Latest log file ==="
+          ls -t logs/*.log 2>/dev/null | head -1 | xargs cat || true
+
+      - name: Commit and push updates
+        if: steps.cadence.outputs.skip != 'true'
+        run: |
+          git config user.name  "GenAI Wheel Bot"
+          git config user.email "actions@github.com"
+          git add data/tools.json data/score_history.json index.html logs/
+          # Only commit if something actually changed
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            STAMP=$(date -u +"%Y-%m-%d")
+            git commit -m "chore: biweekly wheel update ($STAMP) [skip ci]"
+            git push
+          fi

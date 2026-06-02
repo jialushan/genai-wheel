@@ -1,0 +1,529 @@
+{
+  "categories": [
+    {
+      "name": "Agentic AI",
+      "tools": [
+        {
+          "name": "Devin",
+          "url": "https://devin.ai",
+          "highlighted": true
+        },
+        {
+          "name": "Manus",
+          "url": "https://manus.im",
+          "highlighted": false
+        },
+        {
+          "name": "CrewAI",
+          "url": "https://www.crewai.com",
+          "highlighted": false
+        },
+        {
+          "name": "Sana",
+          "url": "https://sana.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Beam",
+          "url": "https://beam.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Lindy",
+          "url": "https://www.lindy.ai",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Chatbot",
+      "tools": [
+        {
+          "name": "ChatGPT",
+          "url": "https://chatgpt.com",
+          "highlighted": true
+        },
+        {
+          "name": "Gemini",
+          "url": "https://gemini.google.com",
+          "highlighted": false
+        },
+        {
+          "name": "Claude",
+          "url": "https://claude.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Copilot",
+          "url": "https://copilot.microsoft.com",
+          "highlighted": false
+        },
+        {
+          "name": "Mistral Le Chat",
+          "url": "https://chat.mistral.ai",
+          "highlighted": false
+        },
+        {
+          "name": "DeepSeek",
+          "url": "https://www.deepseek.com",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Conducting research",
+      "tools": [
+        {
+          "name": "Perplexity",
+          "url": "https://www.perplexity.ai",
+          "highlighted": true
+        },
+        {
+          "name": "NotebookLM",
+          "url": "https://notebooklm.google.com",
+          "highlighted": true
+        },
+        {
+          "name": "Elicit",
+          "url": "https://elicit.com",
+          "highlighted": false
+        },
+        {
+          "name": "Semantic Scholar",
+          "url": "https://www.semanticscholar.org",
+          "highlighted": false
+        },
+        {
+          "name": "Consensus",
+          "url": "https://consensus.app",
+          "highlighted": false
+        },
+        {
+          "name": "Research Rabbit",
+          "url": "https://www.researchrabbit.ai",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Creating and editing images",
+      "tools": [
+        {
+          "name": "Midjourney",
+          "url": "https://www.midjourney.com",
+          "highlighted": true
+        },
+        {
+          "name": "Adobe Firefly",
+          "url": "https://www.adobe.com/products/firefly.html",
+          "highlighted": true
+        },
+        {
+          "name": "Flux",
+          "url": "https://blackforestlabs.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Leonardo.Ai",
+          "url": "https://leonardo.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Canva Magic Studio",
+          "url": "https://www.canva.com/magic-studio",
+          "highlighted": false
+        },
+        {
+          "name": "Imagen",
+          "url": "https://deepmind.google/technologies/imagen",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Creating and editing presentations",
+      "tools": [
+        {
+          "name": "Gamma",
+          "url": "https://gamma.app",
+          "highlighted": true
+        },
+        {
+          "name": "Beautiful.ai",
+          "url": "https://www.beautiful.ai",
+          "highlighted": true
+        },
+        {
+          "name": "Pitch",
+          "url": "https://pitch.com",
+          "highlighted": false
+        },
+        {
+          "name": "Slidebean",
+          "url": "https://slidebean.com",
+          "highlighted": false
+        },
+        {
+          "name": "SlidesAI",
+          "url": "https://www.slidesai.io",
+          "highlighted": false
+        },
+        {
+          "name": "MagicSlides",
+          "url": "https://www.magicslides.app",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Creating and editing text",
+      "tools": [
+        {
+          "name": "Grammarly",
+          "url": "https://www.grammarly.com",
+          "highlighted": true
+        },
+        {
+          "name": "Notion AI",
+          "url": "https://www.notion.so/product/ai",
+          "highlighted": true
+        },
+        {
+          "name": "QuillBot",
+          "url": "https://quillbot.com",
+          "highlighted": false
+        },
+        {
+          "name": "Jasper",
+          "url": "https://www.jasper.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Copy.ai",
+          "url": "https://www.copy.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Wordtune",
+          "url": "https://www.wordtune.com",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Creating and editing sound",
+      "tools": [
+        {
+          "name": "ElevenLabs",
+          "url": "https://elevenlabs.io",
+          "highlighted": true
+        },
+        {
+          "name": "Suno",
+          "url": "https://suno.com",
+          "highlighted": true
+        },
+        {
+          "name": "Udio",
+          "url": "https://www.udio.com",
+          "highlighted": false
+        },
+        {
+          "name": "Descript",
+          "url": "https://www.descript.com",
+          "highlighted": false
+        },
+        {
+          "name": "Speechify",
+          "url": "https://speechify.com",
+          "highlighted": false
+        },
+        {
+          "name": "Murf.AI",
+          "url": "https://murf.ai",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Creating and editing video",
+      "tools": [
+        {
+          "name": "Runway",
+          "url": "https://runwayml.com",
+          "highlighted": true
+        },
+        {
+          "name": "Veo",
+          "url": "https://deepmind.google/technologies/veo",
+          "highlighted": true
+        },
+        {
+          "name": "CapCut",
+          "url": "https://www.capcut.com",
+          "highlighted": false
+        },
+        {
+          "name": "HeyGen",
+          "url": "https://www.heygen.com",
+          "highlighted": false
+        },
+        {
+          "name": "Kling AI",
+          "url": "https://klingai.com",
+          "highlighted": false
+        },
+        {
+          "name": "Synthesia",
+          "url": "https://www.synthesia.io",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Email management",
+      "tools": [
+        {
+          "name": "Superhuman",
+          "url": "https://superhuman.com",
+          "highlighted": true
+        },
+        {
+          "name": "Shortwave",
+          "url": "https://www.shortwave.com",
+          "highlighted": true
+        },
+        {
+          "name": "Fyxer",
+          "url": "https://www.fyxer.com",
+          "highlighted": false
+        },
+        {
+          "name": "SaneBox",
+          "url": "https://www.sanebox.com",
+          "highlighted": false
+        },
+        {
+          "name": "MailMaestro",
+          "url": "https://www.maestrolabs.com",
+          "highlighted": false
+        },
+        {
+          "name": "Spike",
+          "url": "https://www.spikenow.com",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Learning and education",
+      "tools": [
+        {
+          "name": "Duolingo Max",
+          "url": "https://www.duolingo.com",
+          "highlighted": true
+        },
+        {
+          "name": "Khanmigo",
+          "url": "https://www.khanmigo.ai",
+          "highlighted": true
+        },
+        {
+          "name": "Docebo",
+          "url": "https://www.docebo.com",
+          "highlighted": false
+        },
+        {
+          "name": "360Learning",
+          "url": "https://360learning.com",
+          "highlighted": false
+        },
+        {
+          "name": "Absorb",
+          "url": "https://www.absorblms.com",
+          "highlighted": false
+        },
+        {
+          "name": "TalentLMS",
+          "url": "https://www.talentlms.com",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Scheduling management",
+      "tools": [
+        {
+          "name": "Motion",
+          "url": "https://www.usemotion.com",
+          "highlighted": true
+        },
+        {
+          "name": "Reclaim.ai",
+          "url": "https://reclaim.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Akiflow",
+          "url": "https://akiflow.com",
+          "highlighted": false
+        },
+        {
+          "name": "Cal.ai",
+          "url": "https://cal.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Sunsama",
+          "url": "https://www.sunsama.com",
+          "highlighted": false
+        },
+        {
+          "name": "Vimcal",
+          "url": "https://www.vimcal.com",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Task automation",
+      "tools": [
+        {
+          "name": "Zapier",
+          "url": "https://zapier.com",
+          "highlighted": true
+        },
+        {
+          "name": "n8n",
+          "url": "https://n8n.io",
+          "highlighted": true
+        },
+        {
+          "name": "Make",
+          "url": "https://www.make.com",
+          "highlighted": false
+        },
+        {
+          "name": "Workato",
+          "url": "https://www.workato.com",
+          "highlighted": false
+        },
+        {
+          "name": "Tray.ai",
+          "url": "https://tray.ai",
+          "highlighted": false
+        },
+        {
+          "name": "Jitterbit",
+          "url": "https://www.jitterbit.com",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Transcription",
+      "tools": [
+        {
+          "name": "Otter.ai",
+          "url": "https://otter.ai",
+          "highlighted": true
+        },
+        {
+          "name": "Fireflies",
+          "url": "https://fireflies.ai",
+          "highlighted": true
+        },
+        {
+          "name": "tl;dv",
+          "url": "https://tldv.io",
+          "highlighted": false
+        },
+        {
+          "name": "Fathom",
+          "url": "https://fathom.video",
+          "highlighted": false
+        },
+        {
+          "name": "Rev",
+          "url": "https://www.rev.com",
+          "highlighted": false
+        },
+        {
+          "name": "Trint",
+          "url": "https://trint.com",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Translation and localization",
+      "tools": [
+        {
+          "name": "DeepL",
+          "url": "https://www.deepl.com",
+          "highlighted": true
+        },
+        {
+          "name": "Lokalise",
+          "url": "https://lokalise.com",
+          "highlighted": true
+        },
+        {
+          "name": "Smartling",
+          "url": "https://www.smartling.com",
+          "highlighted": false
+        },
+        {
+          "name": "Crowdin",
+          "url": "https://crowdin.com",
+          "highlighted": false
+        },
+        {
+          "name": "Transifex",
+          "url": "https://www.transifex.com",
+          "highlighted": false
+        },
+        {
+          "name": "Phrase",
+          "url": "https://phrase.com",
+          "highlighted": false
+        }
+      ]
+    },
+    {
+      "name": "Writing and analyzing code",
+      "tools": [
+        {
+          "name": "Cursor",
+          "url": "https://cursor.com",
+          "highlighted": true
+        },
+        {
+          "name": "GitHub Copilot",
+          "url": "https://github.com/features/copilot",
+          "highlighted": true
+        },
+        {
+          "name": "Windsurf",
+          "url": "https://windsurf.com",
+          "highlighted": false
+        },
+        {
+          "name": "Claude Code",
+          "url": "https://www.anthropic.com/claude-code",
+          "highlighted": false
+        },
+        {
+          "name": "Bolt",
+          "url": "https://bolt.new",
+          "highlighted": false
+        },
+        {
+          "name": "Replit",
+          "url": "https://replit.com",
+          "highlighted": false
+        }
+      ]
+    }
+  ]
+}
