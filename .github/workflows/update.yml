@@ -76,7 +76,13 @@ jobs:
         run: |
           git config user.name  "GenAI Wheel Bot"
           git config user.email "actions@github.com"
-          git add data/tools.json data/score_history.json index.html logs/
+          # Add files one by one with `|| true` so missing optional files
+          # (e.g. score_history.json when the updater timed out before
+          # writing it) don't fail the whole step.
+          git add data/tools.json       || true
+          git add data/score_history.json || true
+          git add index.html            || true
+          git add logs/                 || true
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
