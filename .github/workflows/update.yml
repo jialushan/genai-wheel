@@ -25,17 +25,12 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v5
         with:
-          # We need full history so the auto-commit doesn't fight with old refs.
           fetch-depth: 0
 
       - name: Skip if not a target ISO week (biweekly cadence)
         id: cadence
         run: |
-          # GitHub's cron doesn't support "every 2 weeks". Use ISO week number:
-          # run on EVEN-numbered weeks only. (Adjust to `-eq 1` for odd weeks
-          # if you'd rather start the cadence on the other week.)
           WEEK=$(date -u +%V)
-          # `10#` forces base-10 in case of leading zero, e.g. "08"
           if [ $((10#$WEEK % 2)) -ne 0 ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
             echo "Week $WEEK is odd — skipping this run."
@@ -43,7 +38,6 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
             echo "Week $WEEK is even — proceeding."
           fi
-        # Manual runs (workflow_dispatch) bypass the cadence check.
         if: github.event_name == 'schedule'
 
       - name: Set up Python
@@ -57,10 +51,6 @@ jobs:
         if: steps.cadence.outputs.skip != 'true'
         run: pip install -r requirements.txt
 
-      - name: Install Playwright browser (for snapshots)
-        if: steps.cadence.outputs.skip != 'true'
-        run: python -m playwright install --with-deps chromium
-
       - name: Run the v2 updater
         if: steps.cadence.outputs.skip != 'true'
         run: |
@@ -71,10 +61,6 @@ jobs:
           else
             python main.py --quiet
           fi
-
-      - name: Snapshot the wheel to archive/
-        if: steps.cadence.outputs.skip != 'true'
-        run: python scripts/snapshot.py
 
       - name: Show what changed
         if: steps.cadence.outputs.skip != 'true'
@@ -90,8 +76,7 @@ jobs:
         run: |
           git config user.name  "GenAI Wheel Bot"
           git config user.email "actions@github.com"
-          git add data/tools.json data/score_history.json index.html logs/ archive/
-          # Only commit if something actually changed
+          git add data/tools.json data/score_history.json index.html logs/
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
