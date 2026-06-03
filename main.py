@@ -9,11 +9,13 @@ Usage:
   python main.py --refresh-logos # download fresh logos, then re-render
   python main.py --cap N         # max tools per category (default 6)
   python main.py --quiet         # suppress progress output (for cron)
+  python main.py --timeout N     # max seconds for scoring phase (default 900)
 """
 
 import argparse
 import json
 import os
+import signal
 import sys
 from datetime import datetime
 
@@ -28,6 +30,10 @@ from scraper import logos as logos_mod
 TOOLS_PATH = os.path.join(ROOT, "data", "tools.json")
 OUTPUT_PATH = os.path.join(ROOT, "index.html")
 LOG_DIR = os.path.join(ROOT, "logs")
+
+
+class ScoringTimeout(Exception):
+    """Raised when the scoring phase exceeds its overall time budget."""
 
 
 def _load_tools():
@@ -50,6 +56,31 @@ def _write_run_log(log_lines):
     return path
 
 
+def _run_with_timeout(callable_, timeout_seconds, *args, **kwargs):
+    """
+    Run `callable_(*args, **kwargs)` with a hard wall-clock timeout.
+    Uses SIGALRM, which only works on Unix (which GitHub Actions uses).
+    On Windows the timeout is silently ignored — the script will just run
+    however long it runs.
+    """
+    if not hasattr(signal, "SIGALRM"):
+        # Windows path — no timeout enforcement
+        return callable_(*args, **kwargs)
+
+    def _on_timeout(signum, frame):
+        raise ScoringTimeout(
+            f"scoring exceeded {timeout_seconds}s budget"
+        )
+
+    old_handler = signal.signal(signal.SIGALRM, _on_timeout)
+    signal.alarm(timeout_seconds)
+    try:
+        return callable_(*args, **kwargs)
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, old_handler)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Update and render the GenAI productivity wheel.")
     parser.add_argument("--dry-run", action="store_true",
@@ -64,11 +95,18 @@ def main():
                         help="Suppress stdout; only write the log file. Useful for cron.")
     parser.add_argument("--cap", type=int, default=6,
                         help="Max tools per category (v2 only). Default 6.")
+    parser.add_argument("--timeout", type=int, default=900,
+                        help="Max seconds for the scoring phase. Default 900 (15min).")
     args = parser.parse_args()
+
+    # On non-quiet mode, flush stdout aggressively so progress is visible in
+    # GitHub Actions logs in real time (default buffering hides it).
+    if not args.quiet:
+        sys.stdout.reconfigure(line_buffering=True)
 
     def out(msg=""):
         if not args.quiet:
-            print(msg)
+            print(msg, flush=True)
 
     if args.refresh_logos:
         out("Downloading logos for every tool")
@@ -96,12 +134,23 @@ def main():
     out("Loading current tools…")
     data = _load_tools()
 
-    if args.legacy:
-        out("Running v1 scoring + discovery (legacy mode)\n")
-        new_data, log = updater.update(data, dry_run=args.dry_run)
-    else:
-        out(f"Running v2 scoring + discovery (cap={args.cap})\n")
-        new_data, log = updater_v2.update(data, cap=args.cap)
+    out(f"Running v{'1 (legacy)' if args.legacy else '2'} scoring + discovery "
+        f"(cap={args.cap}, timeout={args.timeout}s)\n")
+
+    try:
+        if args.legacy:
+            new_data, log = _run_with_timeout(
+                updater.update, args.timeout, data, dry_run=args.dry_run
+            )
+        else:
+            new_data, log = _run_with_timeout(
+                updater_v2.update, args.timeout, data, cap=args.cap
+            )
+    except ScoringTimeout as e:
+        out(f"\n⚠ {e}")
+        out("Falling back to current tools.json without changes.")
+        out("(The render step still runs so index.html stays fresh.)")
+        new_data, log = data, [f"== TIMEOUT after {args.timeout}s — no changes applied =="]
 
     for line in log:
         out(line)

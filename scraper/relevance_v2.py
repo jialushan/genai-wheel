@@ -40,7 +40,10 @@ RECENCY_FULL_DAYS = 30     # ≤30 days old = full recency
 RECENCY_ZERO_DAYS = 365    # ≥1 year old = zero recency
 CATEGORY_FULL = 5          # 5+ category-mention results = full
 
-HTTP_TIMEOUT = 8
+HTTP_TIMEOUT = 4        # Tighter than v1's 8s — GitHub Actions IPs are
+                        # commonly rate-limited by news.google.com to near-
+                        # timeout. 4s ensures the whole run finishes in
+                        # under 15 minutes even on a fully-throttled IP.
 REQUEST_DELAY = 0.4
 USER_AGENT = (
     "Mozilla/5.0 (compatible; GenAIWheelBot/2.0; "

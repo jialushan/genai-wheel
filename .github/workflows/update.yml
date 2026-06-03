@@ -7,6 +7,11 @@ on:
   schedule:
     - cron: "0 4 * * 1"   # every Monday 04:00 UTC
   workflow_dispatch:      # also allow manual triggering from the Actions tab
+    inputs:
+      verbose:
+        description: "Show progress (uncheck for silent cron-style run)"
+        type: boolean
+        default: true
 
 # Grant the workflow permission to commit files back to the repo.
 permissions:
@@ -52,9 +57,24 @@ jobs:
         if: steps.cadence.outputs.skip != 'true'
         run: pip install -r requirements.txt
 
+      - name: Install Playwright browser (for snapshots)
+        if: steps.cadence.outputs.skip != 'true'
+        run: python -m playwright install --with-deps chromium
+
       - name: Run the v2 updater
         if: steps.cadence.outputs.skip != 'true'
-        run: python main.py --quiet
+        run: |
+          # Manual runs default to verbose; scheduled runs are always quiet.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && \
+             [ "${{ inputs.verbose }}" = "true" ]; then
+            python main.py
+          else
+            python main.py --quiet
+          fi
+
+      - name: Snapshot the wheel to archive/
+        if: steps.cadence.outputs.skip != 'true'
+        run: python scripts/snapshot.py
 
       - name: Show what changed
         if: steps.cadence.outputs.skip != 'true'
@@ -70,7 +90,7 @@ jobs:
         run: |
           git config user.name  "GenAI Wheel Bot"
           git config user.email "actions@github.com"
-          git add data/tools.json data/score_history.json index.html logs/
+          git add data/tools.json data/score_history.json index.html logs/ archive/
           # Only commit if something actually changed
           if git diff --staged --quiet; then
             echo "No changes to commit."

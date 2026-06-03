@@ -24,7 +24,7 @@ USER_AGENT = (
     "Mozilla/5.0 (compatible; GenAIWheelBot/2.0; "
     "+https://www.imd.org/centers/digital-ai-transformation-center)"
 )
-HTTP_TIMEOUT = 8
+HTTP_TIMEOUT = 4    # Tight timeout to bound runtime on rate-limited IPs.
 REQUEST_DELAY = 0.4
 
 DOMAIN_PATTERN = re.compile(
