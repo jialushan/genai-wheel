@@ -245,31 +245,31 @@ def load_logo_as_data_uri(name: str) -> Optional[str]:
     """Load a saved logo file and return it as a base64 data URI string.
 
     If multiple files exist for the same slug (e.g. an auto-generated monogram
-    `chatgpt.svg` and a manually uploaded `chatgpt.png`), the **most recently
-    modified file wins**. This lets a fresh user upload override any earlier
-    auto-fetch result without manual cleanup.
+    `chatgpt.svg` and a manually uploaded `chatgpt.png`), prefer raster
+    formats over SVG. Rationale:
+      - Our auto-generated monograms are always SVG.
+      - User-uploaded real logos are almost always PNG/JPG/WebP.
+      - Preferring raster gives a real logo priority over a leftover monogram.
+      - Unlike file mtime, this rule is deterministic across `git checkout`
+        (where all files get the same mtime), so behaviour is consistent
+        between local dev and CI.
     """
     slug = _slug(name)
-    mime_by_ext = {
-        "svg": "image/svg+xml",
-        "png": "image/png",
-        "jpg": "image/jpeg",
-        "jpeg": "image/jpeg",
-        "webp": "image/webp",
-        "gif": "image/gif",
-        "ico": "image/x-icon",
-    }
-    candidates = []
-    for ext, mime in mime_by_ext.items():
+    # Priority order: raster first, SVG last
+    ext_priority = [
+        ("png",  "image/png"),
+        ("jpg",  "image/jpeg"),
+        ("jpeg", "image/jpeg"),
+        ("webp", "image/webp"),
+        ("gif",  "image/gif"),
+        ("ico",  "image/x-icon"),
+        ("svg",  "image/svg+xml"),
+    ]
+    for ext, mime in ext_priority:
         path = os.path.join(LOGOS_DIR, f"{slug}.{ext}")
         if os.path.exists(path):
-            candidates.append((os.path.getmtime(path), path, mime))
-    if not candidates:
-        return None
-    # Newest first
-    candidates.sort(reverse=True)
-    _, path, mime = candidates[0]
-    with open(path, "rb") as f:
-        data = f.read()
-    b64 = base64.b64encode(data).decode("ascii")
-    return f"data:{mime};base64,{b64}"
+            with open(path, "rb") as f:
+                data = f.read()
+            b64 = base64.b64encode(data).decode("ascii")
+            return f"data:{mime};base64,{b64}"
+    return None
