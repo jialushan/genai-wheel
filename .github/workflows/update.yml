@@ -13,9 +13,12 @@ on:
         type: boolean
         default: true
 
-# Grant the workflow permission to commit files back to the repo.
+# Grant the workflow permission to commit files back to the repo,
+# and to dispatch other workflows (so we can trigger deploy-pages
+# after the auto-commit).
 permissions:
   contents: write
+  actions: write
 
 jobs:
   update:
@@ -73,6 +76,7 @@ jobs:
 
       - name: Commit and push updates
         if: steps.cadence.outputs.skip != 'true'
+        id: commit
         run: |
           git config user.name  "GenAI Wheel Bot"
           git config user.email "actions@github.com"
@@ -85,8 +89,21 @@ jobs:
           git add logs/                 || true
           if git diff --staged --quiet; then
             echo "No changes to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
           else
             STAMP=$(date -u +"%Y-%m-%d")
             git commit -m "chore: biweekly wheel update ($STAMP) [skip ci]"
             git push
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Trigger Pages deployment
+        # The auto-commit above uses `[skip ci]` to avoid this workflow
+        # re-triggering itself (which would cause an infinite loop). But that
+        # also prevents the deploy-pages workflow from being auto-triggered
+        # by the push. So we dispatch it explicitly here.
+        if: steps.cadence.outputs.skip != 'true' && steps.commit.outputs.pushed == 'true'
+        run: |
+          gh workflow run deploy-pages.yml --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
