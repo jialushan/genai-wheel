@@ -19,6 +19,19 @@ from datetime import datetime, timezone
 DEFAULT_CAP = 6
 SWAP_MARGIN = 1.5     # candidate must beat the worst current tool by 1.5+ to swap
 
+# Safety check: if at least this fraction of existing tools come back with
+# zero news mentions (n_news == 0), Google News is almost certainly rate-
+# limiting this IP. We abort the run rather than write an emptied-out
+# tools.json. Tuned conservatively (>=90%) so it only fires on actual
+# rate-limit events, not on niche-tool runs.
+RATE_LIMIT_ABORT_FRACTION = 0.90
+RATE_LIMIT_MIN_SAMPLE = 30
+
+
+class RateLimitedAbort(Exception):
+    """Raised when news signal is so degraded the run cannot be trusted."""
+    pass
+
 
 def _score_all_existing(category_name, tools):
     """Score every current tool. Return list of (tool, score_dict)."""
@@ -193,6 +206,7 @@ def update(tools_data, cap=DEFAULT_CAP):
     log = [f"== v2 update, cap={cap}, threshold={relevance.FADING_THRESHOLD} =="]
     new_categories = []
     scores_by_cat = {}  # (tool_name, category_name) -> score_dict
+    _news_stats = {"total": 0, "zero_news": 0}  # for rate-limit detection
 
     for category in tools_data["categories"]:
         name = category["name"]
@@ -200,6 +214,27 @@ def update(tools_data, cap=DEFAULT_CAP):
 
         scored = _score_all_existing(name, category["tools"])
         kept = _drop_fading(scored, log)
+
+        # --- Rate-limit safety check ---
+        # Track scored tools across categories. If we've scored at least
+        # RATE_LIMIT_MIN_SAMPLE tools and the fraction with zero news
+        # mentions is too high, abort. Checked AFTER _drop_fading on each
+        # category, so it fires as early as possible.
+        for _t, _sd in scored:
+            _news_stats["total"] += 1
+            if _sd.get("n_news", 0) == 0:
+                _news_stats["zero_news"] += 1
+        if _news_stats["total"] >= RATE_LIMIT_MIN_SAMPLE:
+            frac = _news_stats["zero_news"] / _news_stats["total"]
+            if frac >= RATE_LIMIT_ABORT_FRACTION:
+                raise RateLimitedAbort(
+                    f"Aborting: {_news_stats['zero_news']}/{_news_stats['total']} "
+                    f"tools scored so far ({frac:.0%}) returned zero news "
+                    f"mentions. Google News is almost certainly rate-limiting "
+                    f"this IP. tools.json was NOT modified. Try again later "
+                    f"from a different network."
+                )
+
         kept = _enforce_cap(kept, cap, log)
         candidates = _discover_and_score(name, kept, log)
         kept = _fill_and_swap(kept, candidates, cap, log)

@@ -129,6 +129,20 @@ def score_tool(name, url, use_cache=True):
     return total
 
 
-def is_defunct(score):
-    """A tool is defunct if it scores below the threshold."""
-    return score < DEFUNCT_THRESHOLD
+def score_tool_detailed(name, url):
+    """
+    Same as score_tool, but returns (total, site_score, news_score).
+    Bypasses cache so the news signal is fresh — needed for the
+    rate-limit safety check in updater.py.
+    """
+    if name in DEFUNCT_BLOCKLIST:
+        return 0.0, 0.0, 0.0
+
+    site = _website_alive_score(url)
+    time.sleep(REQUEST_DELAY)
+    news = _news_score(name)
+    time.sleep(REQUEST_DELAY)
+
+    total = round(site + news, 2)
+    cache.set_score(name, total)
+    return total, site, news

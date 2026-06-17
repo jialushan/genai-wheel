@@ -147,10 +147,23 @@ def main():
                 updater_v2.update, args.timeout, data, cap=args.cap
             )
     except ScoringTimeout as e:
-        out(f"\n⚠ {e}")
+        out(f"\n[WARN] {e}")
         out("Falling back to current tools.json without changes.")
         out("(The render step still runs so index.html stays fresh.)")
-        new_data, log = data, [f"== TIMEOUT after {args.timeout}s — no changes applied =="]
+        new_data, log = data, [f"== TIMEOUT after {args.timeout}s -- no changes applied =="]
+    except updater_v2.RateLimitedAbort as e:
+        out(f"\n[ABORT] {e}")
+        out("\nNothing was written. index.html is untouched. The wheel on")
+        out("the published site is still the previous good version.")
+        out("\nSuggested next step: try again later from a different network")
+        out("(home wifi or mobile hotspot usually works).")
+        # Write a log entry so there's an audit trail of the aborted run
+        _write_run_log([
+            f"== RATE-LIMITED ABORT ==",
+            str(e),
+            "tools.json NOT modified. index.html NOT regenerated.",
+        ])
+        sys.exit(2)
 
     for line in log:
         out(line)
